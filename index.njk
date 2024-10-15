@@ -11,11 +11,11 @@
 {% macro _cell(fg, bg) %}
   {% set score = apcaScore(fg, bg) %}
   {%- if fg == bg %}
-    <td class="cell empty"></td>
+    <td class="cell empty" aria-hidden="true"></td>
   {%- else %}
     <td class="cell swatch" style="--fg: {{ fg }}; --bg: {{ bg }};">
       <div>
-        <span class="type-sample">Aa</span>
+        <span aria-hidden="true" class="type-sample">Aa</span>
         {{ _score(score) }}
       </div>
     </td>
@@ -243,6 +243,12 @@
         <tr>
           <th scope="row">Lc. 90</th>
           {%- for col in fontSizeMinimum(90) %}
+          <td>{{ _size(col) }}</td>
+          {%- endfor%}
+        </tr>
+        <tr>
+          <th scope="row">Lc. 100</th>
+          {%- for col in fontSizeMinimum(100) %}
           <td>{{ _size(col) }}</td>
           {%- endfor%}
         </tr>
