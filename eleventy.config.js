@@ -8,8 +8,12 @@ export default function (eleventyConfig) {
     return calcAPCA(foreground, background, 2);
   });
 
-  eleventyConfig.addNunjucksGlobal("wcagScore", (color1, color2) => {
-    return wcagContrast.score(wcagContrast.hex(color1, color2));
+  eleventyConfig.addNunjucksGlobal("wcagContrast", (color1, color2) => {
+    return wcagContrast.hex(color1, color2);
+  });
+
+  eleventyConfig.addNunjucksGlobal("wcagScore", (contrastRatio) => {
+    return wcagContrast.score(contrastRatio);
   });
 
   eleventyConfig.addNunjucksGlobal("fontSizeMinimum", (score) => {

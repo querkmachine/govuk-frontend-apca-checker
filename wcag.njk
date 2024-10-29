@@ -7,20 +7,21 @@
 {% set maximum = "Suitable for body text at Level AAA." %}
 
 {% macro _cell(c1, c2) %}
-  {% set score = wcagScore(c1, c2) %}
+  {% set contrast = wcagContrast(c1, c2) %}
+  {% set score = wcagScore(contrast) %}
   {%- if c1 == c2 %}
     <td class="cell empty" aria-hidden="true"></td>
   {%- else %}
     <td class="cell swatch" style="--fg: {{ c1 }}; --bg: {{ c2 }};">
       <div>
         <span aria-hidden="true" class="type-sample">Aa</span>
-        {{ _score(score) }}
+        {{ _score(score, contrast) }}
       </div>
     </td>
   {%- endif %}
 {% endmacro %}
 
-{% macro _score(score) %}
+{% macro _score(score, contrast) %}
   {%- set classes = 'wcag-score' -%}
   
   {%- if score == "Fail" %}
@@ -37,7 +38,7 @@
     {% set classes = classes + ' wcag-score--maximum' %}
   {%- endif %}
   
-  <span class="{{ classes }}" title="{{ title }}">{{ score }}</span>
+  <span class="{{ classes }}" title="{{ contrast | toFixed(2) }} — {{ title }}">{{ score }}</span>
 {% endmacro %}
 
 {% block main %}
