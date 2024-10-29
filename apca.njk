@@ -1,0 +1,174 @@
+{% extends "_includes/layout.njk" %}
+{% set title = "GOV.UK Frontend APCA scores" %}
+
+{% set lc0 = "Unsuitable for any use." %}
+{% set lc15 = "Suitable for non-text contrast on disabled elements." %}
+{% set lc30 = "Suitable for text on disabled elements and incidental text (e.g. copyright notice)." %}
+{% set lc45 = "Suitable for logotypes and other very short text." %}
+{% set lc60 = "Suitable for non-text contrast and larger text (e.g. headings)." %}
+{% set lc75 = "Suitable for prosaic text above ≅18px." %}
+{% set lc90 = "Suitable for proasic text above ≅16px." %}
+
+{% macro _cell(fg, bg) %}
+  {% set score = apcaScore(fg, bg) %}
+  {%- if fg == bg %}
+    <td class="cell empty" aria-hidden="true"></td>
+  {%- else %}
+    <td class="cell swatch" style="--fg: {{ fg }}; --bg: {{ bg }};">
+      <div>
+        <span aria-hidden="true" class="type-sample">Aa</span>
+        {{ _score(score) }}
+      </div>
+    </td>
+  {%- endif %}
+{% endmacro %}
+
+{% macro _score(score) %}
+  {%- set score = score | abs -%}
+  {%- set classes = 'apca-score' -%}
+  
+  {%- if score < 15 %}
+    {% set title = lc0 %}
+    {% set classes = classes + ' apca-score--unsuitable' %}
+  {%- elif score >= 15 and score < 30 %}
+    {% set title = lc15 %}
+    {% set classes = classes + ' apca-score--disabled' %}
+  {%- elif score >= 30 and score < 45 %}
+    {% set title = lc30 %}
+    {% set classes = classes + ' apca-score--incidental' %}
+  {%- elif score >= 45 and score < 60 %}
+    {% set title = lc45 %}
+    {% set classes = classes + ' apca-score--logos' %}
+  {%- elif score >= 60 and score < 75 %}
+    {% set title = lc60 %}
+    {% set classes = classes + ' apca-score--non-text' %}
+  {%- elif score >= 75 and score < 90 %}
+    {% set title = lc75 %}
+    {% set classes = classes + ' apca-score--body' %}
+  {%- elif score >= 90 %}
+    {% set title = lc90 %}
+    {% set classes = classes + ' apca-score--body-small' %}
+  {%- endif %}
+  
+  <span class="{{ classes }}" title="{{ title }}">{{ score }}</span>
+{% endmacro %}
+
+{% macro _size(size) %}
+  {%- if size == 777 %}
+    🚫
+  {%- else %}
+    {{ (size * 1.05) | toFixed(1) }}px
+  {%- endif %}
+{% endmacro %}
+
+{% block main %}
+
+  <h1>GOV.UK Frontend <abbr title="Accessible Perceptual Contrast Algorithm">APCA</abbr> calculations</h1>
+  
+  <p>APCA's rough boundaries:</p>
+  <ul>
+    <li>Lc. <15 — {{ lc0 }}</li>
+    <li>Lc. 15 — {{ lc15 }}</li>
+    <li>Lc. 30 — {{ lc30 }}</li>
+    <li>Lc. 45 — {{ lc45 }}</li>
+    <li>Lc. 60 — {{ lc60 }}</li>
+    <li>Lc. 75 — {{ lc75 }}</li>
+    <li>Lc. 90+ — {{ lc90 }}</li>
+  </ul>
+  
+  <h2>Colour palette scores</h2>
+  <p>APCA scores for each of the colour combinations possible with the GOV.UK Frontend palette.</p>
+  <p>APCA scores are contextual on usage, so the same combination may receive different scores depending on which colour is the foreground and which is the background.</p>
+
+  <div class="scroller">
+    <table>
+      <thead>
+        <tr>
+          <th aria-hidden="true"></th>
+          {%- for fg in colours.full %}
+            <th scope="col">{{ fg.label }}<br><code>{{ fg.color }}</code></th>
+          {%- endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {%- for bg in colours.full %}
+        <tr>
+          <th scope="row">{{ bg.label }}<br><code>{{ bg.color }}</code></th>
+          {%- for fg in colours.full %}
+            {{ _cell(fg.color, bg.color) }}
+          {%- endfor %}
+        </tr>
+        {%- endfor %}
+      </tbody>
+    </table>
+  </div>
+  
+  
+  <h2>Minimum font size and weights</h2>
+  <p>GDS Transport has a reference ratio of 1.05, due to having a slightly smaller x-height than the reference typeface (Helvetica). This means that the minimum font sizes needed are 0.05× higher than their reference equivalents, rounded up. 
+  <p>As we only use Transport in 400 and 700 weights, and these are very close to their Helvetica equivalents, no weight offset has been applied.</p>
+  
+  <div class="scroller">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col" style="font-weight: 100;">100</th>
+          <th scope="col" style="font-weight: 200;">200</th>
+          <th scope="col" style="font-weight: 300;">300</th>
+          <th scope="col" style="font-weight: 400;">400</th>
+          <th scope="col" style="font-weight: 500;">500</th>
+          <th scope="col" style="font-weight: 600;">600</th>
+          <th scope="col" style="font-weight: 700;">700</th>
+          <th scope="col" style="font-weight: 800;">800</th>
+          <th scope="col" style="font-weight: 900;">900</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Lc. 15</th>
+          {%- for col in fontSizeMinimum(15) %}
+          <td>{{ _size(col) }}</td>
+          {%- endfor%}
+        </tr>
+        <tr>
+          <th scope="row">Lc. 30</th>
+          {%- for col in fontSizeMinimum(30) %}
+          <td>{{ _size(col) }}</td>
+          {%- endfor%}
+        </tr>
+        <tr>
+          <th scope="row">Lc. 45</th>
+          {%- for col in fontSizeMinimum(45) %}
+          <td>{{ _size(col) }}</td>
+          {%- endfor%}
+        </tr>
+        <tr>
+          <th scope="row">Lc. 60</th>
+          {%- for col in fontSizeMinimum(60) %}
+          <td>{{ _size(col) }}</td>
+          {%- endfor%}
+        </tr>
+        <tr>
+          <th scope="row">Lc. 75</th>
+          {%- for col in fontSizeMinimum(75) %}
+          <td>{{ _size(col) }}</td>
+          {%- endfor%}
+        </tr>
+        <tr>
+          <th scope="row">Lc. 90</th>
+          {%- for col in fontSizeMinimum(90) %}
+          <td>{{ _size(col) }}</td>
+          {%- endfor%}
+        </tr>
+        <tr>
+          <th scope="row">Lc. 100</th>
+          {%- for col in fontSizeMinimum(100) %}
+          <td>{{ _size(col) }}</td>
+          {%- endfor%}
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+{% endblock %}

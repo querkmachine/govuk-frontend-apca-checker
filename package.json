@@ -12,5 +12,8 @@
   "dependencies": {
     "@11ty/eleventy": "^3.0.0",
     "apca-w3": "^0.1.9"
+  },
+  "devDependencies": {
+    "wcag-contrast": "^3.0.0"
   }
 }

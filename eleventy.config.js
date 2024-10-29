@@ -1,8 +1,15 @@
 import { calcAPCA, fontLookupAPCA } from "apca-w3";
+import wcagContrast from "wcag-contrast";
 
 export default function (eleventyConfig) {
+  eleventyConfig.addPassthroughCopy("style.css");
+
   eleventyConfig.addNunjucksGlobal("apcaScore", (foreground, background) => {
     return calcAPCA(foreground, background, 2);
+  });
+
+  eleventyConfig.addNunjucksGlobal("wcagScore", (color1, color2) => {
+    return wcagContrast.score(wcagContrast.hex(color1, color2));
   });
 
   eleventyConfig.addNunjucksGlobal("fontSizeMinimum", (score) => {

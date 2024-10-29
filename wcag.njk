@@ -1,0 +1,83 @@
+{% extends "_includes/layout.njk" %}
+{% set title = "GOV.UK Frontend WCAG colour contrast ratios" %}
+
+{% set unsuitable = "Unsuitable for any use." %}
+{% set minimum = "Suitable for user interface elements; non-text content (images, charts); and large text at Level AA." %}
+{% set medium = "Suitable for body text at Level AA; large text at Level AAA." %}
+{% set maximum = "Suitable for body text at Level AAA." %}
+
+{% macro _cell(c1, c2) %}
+  {% set score = wcagScore(c1, c2) %}
+  {%- if c1 == c2 %}
+    <td class="cell empty" aria-hidden="true"></td>
+  {%- else %}
+    <td class="cell swatch" style="--fg: {{ c1 }}; --bg: {{ c2 }};">
+      <div>
+        <span aria-hidden="true" class="type-sample">Aa</span>
+        {{ _score(score) }}
+      </div>
+    </td>
+  {%- endif %}
+{% endmacro %}
+
+{% macro _score(score) %}
+  {%- set classes = 'wcag-score' -%}
+  
+  {%- if score == "Fail" %}
+    {% set title = unsuitable %}
+    {% set classes = classes + ' wcag-score--unsuitable' %}
+  {%- elif score == "AA Large" %}
+    {% set title = minimum %}
+    {% set classes = classes + ' wcag-score--minimum' %}
+  {%- elif score == "AA" %}
+    {% set title = medium %}
+    {% set classes = classes + ' wcag-score--medium' %}
+  {%- elif score == "AAA" %}
+    {% set title = maximum %}
+    {% set classes = classes + ' wcag-score--maximum' %}
+  {%- endif %}
+  
+  <span class="{{ classes }}" title="{{ title }}">{{ score }}</span>
+{% endmacro %}
+
+{% block main %}
+<h1>GOV.UK Frontend <abbr title="Web Content Accessibility Guidelines">WCAG</abbr> contrast scores</h1>
+
+  <p>WCAG's rough boundaries:</p>
+<ul>
+  <li>AA Large (3:1) — {{ minimum }}</li>
+  <li>AA (4.5:1) — {{ medium }}</li>
+  <li>AAA (7:1) — {{ maximum }}</li>
+</ul>
+<p>Large text is defined as being 18pt (24px) or 14pt when bold (18.666px).</p>
+<p>Logos and disabled user interface elements do not need to meet a minimum contrast.</p>
+
+<h2>Colour palette scores</h2>
+<p>WCAG contrast ratios for each of the colour combinations possible with the GOV.UK Frontend palette.</p>
+<p>WCAG's contrast ratio algorithm is agnostic to usage: the same combination scores the same regardless of which one is the foreground and which is the background.</p>
+
+
+<div class="scroller">
+  <table>
+    <thead>
+      <tr>
+        <th aria-hidden="true"></th>
+        {%- for fg in colours.full %}
+          <th scope="col">{{ fg.label }}<br><code>{{ fg.color }}</code></th>
+        {%- endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {%- for bg in colours.full %}
+      <tr>
+        <th scope="row">{{ bg.label }}<br><code>{{ bg.color }}</code></th>
+        {%- for fg in colours.full %}
+          {{ _cell(fg.color, bg.color) }}
+        {%- endfor %}
+      </tr>
+      {%- endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

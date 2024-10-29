@@ -1,0 +1,110 @@
+:root {
+  --grid-max-width: 90%;
+  --font-body: system-ui, Helvetica, sans-serif;
+  --color-accent: currentcolor;
+}
+
+.scroller {
+  overflow: auto;
+}
+
+table {
+  inline-size: auto;
+  table-layout: fixed;
+}
+
+table th,
+table td {
+  border: 1px solid;
+}
+
+table thead th {
+  border-block-start: none;
+  padding-inline: var(--space-1);
+}
+
+table tr th:first-child {
+  border-inline-start: none;
+}
+
+table tbody td,
+table td:last-child {
+  padding: var(--space-1);
+}
+
+code {
+  font-size: smaller;
+}
+
+.cell.empty {
+  background-image: linear-gradient(
+    45deg,
+    transparent 50%,
+    currentcolor 50%,
+    currentcolor calc(50% + 1px),
+    transparent calc(50% + 1px)
+  );
+}
+
+.cell.swatch {
+  background-color: var(--bg);
+}
+
+.cell div {
+  display: flex;
+  flex-direction: column;
+  inline-size: 6rem;
+  block-size: 6rem;
+}
+
+.type-sample {
+  color: var(--fg);
+  font-size: 2.2em;
+  line-height: 1;
+}
+
+.apca-score,
+.wcag-score {
+  display: inline-block;
+  align-self: flex-end;
+  margin-top: auto;
+  padding-inline: var(--space-1);
+  color: #fff;
+  text-shadow: 0 0 1px black;
+  font-size: small;
+  font-weight: bold;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.apca-score--unsuitable,
+.wcag-score--unsuitable {
+  background-color: #000000;
+}
+
+.apca-score--disabled {
+  background-color: #15240b;
+}
+
+.apca-score--incidental,
+.wcag-score--minimum {
+  background-color: #294715;
+}
+
+.apca-score--logos {
+  background-color: #3e6b20;
+}
+
+.apca-score--non-text,
+.wcag-score--medium {
+  background-color: #528e2a;
+}
+
+.apca-score--body {
+  background-color: #67b235;
+}
+
+.apca-score--body-small,
+.wcag-score--maximum {
+  background-color: #7bd53f;
+}
