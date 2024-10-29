@@ -21,5 +21,7 @@ export default function (eleventyConfig) {
     return Number(num).toFixed(decimals);
   });
 
-  return {};
+  return {
+    pathPrefix: "/govuk-frontend-apca-checker/",
+  };
 }
