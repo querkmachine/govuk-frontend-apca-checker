@@ -70,7 +70,6 @@ code {
   margin-top: auto;
   padding-inline: var(--space-1);
   color: #fff;
-  text-shadow: 0 0 1px black;
   font-size: small;
   font-weight: bold;
   font-variant-numeric: tabular-nums;
@@ -107,4 +106,5 @@ code {
 .apca-score--body-small,
 .wcag-score--maximum {
   background-color: #7bd53f;
+  color: black;
 }
